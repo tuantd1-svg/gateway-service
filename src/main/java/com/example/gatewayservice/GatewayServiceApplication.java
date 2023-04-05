@@ -2,6 +2,7 @@ package com.example.gatewayservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -10,21 +11,17 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
 @EnableEurekaClient
 public class GatewayServiceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GatewayServiceApplication.class, args);
     }
-    @Bean
-    public RestTemplate restTemplate()
-    {
-        return new RestTemplate();
-    }
+
 
     @Bean
-    @Profile("ws-dev")
+    @Profile({"ws-dev","default"})
     public static PropertySourcesPlaceholderConfigurer devProperties(){
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer
                 = new PropertySourcesPlaceholderConfigurer();
@@ -35,7 +32,7 @@ public class GatewayServiceApplication {
         return propertySourcesPlaceholderConfigurer;
     }
     @Bean
-    @Profile("ws-dev")
+    @Profile("ws-uat")
     public static PropertySourcesPlaceholderConfigurer uatProperties(){
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer
                 = new PropertySourcesPlaceholderConfigurer();

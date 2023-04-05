@@ -1,3 +1,5 @@
 spring:
   profiles:
-    include: dev
+    group:
+      uat: uat,ws-uat
+      dev: dev,ws-dev

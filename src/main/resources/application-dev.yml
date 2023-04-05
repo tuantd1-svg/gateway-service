@@ -3,21 +3,25 @@ server:
 spring:
   application:
     name: gateway-service
+  main:
+    web-application-type: reactive
   cloud:
     gateway:
       routes:
-        - id : shop-backend
-          uri : lb://SHOP-BACKEND
+        - id : account-service
+          uri: lb://ACCOUNT-SERVICE
           predicates:
-            - Path=/shop-backend/**
-        - id : authentication-service
-          uri: lb://AUTHENTICATION-SERVICE
-          predicates:
-            - Path=/authentication-service/**
+            - Path=/private/account-service/**
+          filters:
+            - JwtAuthenticationFilter
         - id : other-service
           uri: lb://OTHER-SERVICE
           predicates:
-            - Path=/other-service/**
+            - Path=/public/other-service/**
+        - id: authentication-service
+          uri: lb://AUTHENTICATION-SERVICE
+          predicates:
+            - Path=/private/authentication-service/**
   rabbitmq:
     host: localhost
     port: 5672
@@ -32,7 +36,4 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
-api :
-  core:
-    url: http://localhost:9090
-    header: abnckasasas
+
