@@ -5,6 +5,13 @@ spring:
     name: gateway-service
   main:
     web-application-type: reactive
+  sleuth:
+    otel:
+      config:
+        trace-id-ratio-based: 1.0
+      exporter:
+        otlp:
+          endpoint: http://localhost:4317
   cloud:
     gateway:
       routes:
@@ -22,6 +29,10 @@ spring:
           uri: lb://AUTHENTICATION-SERVICE
           predicates:
             - Path=/private/authentication-service/**
+        - id: core-account-service
+          uri: lb://CORE-ACCOUNT-SERVICE
+          predicates:
+            - Path= /private/core-account/**
   rabbitmq:
     host: localhost
     port: 5672
@@ -36,4 +47,7 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
+jwt:
+  authentication:
+    baseUrl : http://localhost:9000/private/authentication-service
 

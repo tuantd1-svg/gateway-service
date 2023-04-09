@@ -5,6 +5,7 @@ import com.example.gatewayservice.model.VerifyPermission;
 import com.example.gatewayservice.model.VerifyToken;
 import com.sun.org.slf4j.internal.Logger;
 import com.sun.org.slf4j.internal.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,9 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
 
     public static final String X_B3_Trace_ID ="X-B3-TraceId";
 
+    @Value("${jwt.authentication.baseUrl}")
+    private String baseUrlAuthentication;
+
 
     public JwtAuthenticationFilter(WebClient.Builder webClientBuilder) {
         super(Config.class);
@@ -36,9 +40,10 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
             if (token != null) {
                 VerifyToken verifyToken = new VerifyToken();
                 verifyToken.setUri(exchange.getRequest().getURI().getPath());
-                return webClientBuilder.build()
+                return webClientBuilder.baseUrl(baseUrlAuthentication)
+                        .build()
                         .post()
-                        .uri("http://localhost:9000/private/authentication-service/user/verify-token")
+                        .uri("/user/verify-token")
                         .header(HttpHeaders.AUTHORIZATION, token)
                         .header(X_B3_Trace_ID, UUID.randomUUID().toString())
                         .body(Mono.just(verifyToken),VerifyToken.class)

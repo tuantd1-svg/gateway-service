@@ -29,9 +29,9 @@ public class LoggerServiceAspect {
     public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             Map<String, Object> parameters = getParameters(joinPoint);
-            LoggerUtils2.info(joinPoint.getSignature().getDeclaringType(), joinPoint.getSignature().getName(), "request", mapper.writeValueAsString(parameters));
+            LoggerUtils2.info(joinPoint.getSignature().getDeclaringType(), joinPoint.getSignature().getName(), "pre", mapper.writeValueAsString(parameters));
             final Object result = joinPoint.proceed();
-            LoggerUtils2.info(joinPoint.getSignature().getDeclaringType(), joinPoint.getSignature().getName(), "response", mapper.writeValueAsString(result));
+            LoggerUtils2.info(joinPoint.getSignature().getDeclaringType(), joinPoint.getSignature().getName(), "post", mapper.writeValueAsString(result));
             return result;
         } catch (Exception e) {
             LoggerUtils2.info(joinPoint.getSignature().getDeclaringType(), joinPoint.getSignature().getName(), "exception", e);
